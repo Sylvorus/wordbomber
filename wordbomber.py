@@ -15,6 +15,8 @@ art = r"""                          __   __                    __
 if platform.system() == 'Windows':
     import win32gui
     import win32con
+    import ctypes
+    from ctypes import wintypes
 
 def load_words(filename):
     # Load words from a file and return a list of words.
@@ -51,7 +53,7 @@ def main():
     used_words = set()
 
     print(art)
-    print("Type 'restart' to reset the used words list. (e.g new game)")
+    print("Type '.' to reset the used words list. (e.g new game)")
     print("Type 'exit' to quit the program.")
 
     set_window_topmost()
@@ -62,14 +64,17 @@ def main():
 
         clear_console()
         print(art)
-        print("Type 'restart' to reset the used words list.")
+        print("Type '.' to reset the used words list.")
         print("Type 'exit' to quit the program.")
 
         if input_letters == 'EXIT':
             break
-        elif input_letters == 'RESTART':
+        elif not input_letters:
+            print("\nPlease enter at least 1 letter.")
+            continue
+        elif input_letters == '.':
             used_words.clear()
-            print("Used words list has been cleared.")
+            print("\nUsed words list has been cleared.")
             continue
 
         # Find and print the first matching word
@@ -81,7 +86,7 @@ def main():
         else:
             print("\nNo matching words found or all matching words have been used.")
 
-    input("Press Enter to exit...")
+    input("\nPress Enter to exit...")
 
 if __name__ == "__main__":
     main()
