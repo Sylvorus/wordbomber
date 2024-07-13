@@ -54,7 +54,7 @@ def main():
     used_words = set()
 
     print(art)
-    print("Type '.' to reset the used words list. (e.g new game)")
+    print("Type '.' to reset the used words list.")
     print("Type 'exit' to quit the program.")
 
     set_window_topmost()
