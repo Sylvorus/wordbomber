@@ -1,8 +1,11 @@
 import os
 import sys
-import platform
+import win32gui
+import win32con
+import win32console
 
-# requirements: pywin32
+# requirements: pywin32, windows
+# feel free to edit but keep credits please
 
 art = r"""                          __   __                    __             
  _      ______  _________/ /  / /_  ____  ____ ___  / /_  ___  _____
@@ -10,13 +13,6 @@ art = r"""                          __   __                    __
 | |/ |/ / /_/ / /  / /_/ /  / /_/ / /_/ / / / / / / /_/ /  __/ /    
 |__/|__/\____/_/   \__,_/  /_.___/\____/_/ /_/ /_/_.___/\___/_/     by sylvorus
 """
-
-# Check if on Windows to use pywin32 for window manipulation
-if platform.system() == 'Windows':
-    import win32gui
-    import win32con
-    import ctypes
-    from ctypes import wintypes
 
 def load_words(filename):
     # Load words from a file and return a list of words.
@@ -33,19 +29,24 @@ def find_matching_word(letters, words, used_words):
 
 def clear_console():
     #Clear the console output. 
-    if sys.platform.startswith('win'):
-        os.system('cls')  # For Windows
-    else:
-        # ANSI escape codes to clear the terminal screen
-        sys.stdout.write("\033[H\033[J")
-        sys.stdout.flush()
+    os.system('cls')
 
 def set_window_topmost():
     # Set the console window as always on top.
-    if platform.system() == 'Windows':
-        console_window = win32gui.GetForegroundWindow()
-        win32gui.SetWindowPos(console_window, win32con.HWND_TOPMOST, 0, 0, 0, 0,
-                              win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
+    console_window = win32gui.GetForegroundWindow()
+    win32gui.SetWindowPos(console_window, win32con.HWND_TOPMOST, 0, 0, 0, 0,
+                            win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)\
+
+def set_console_size(cols, lines):
+    try:
+        # Windows specific code to set console size
+        h = win32console.GetStdHandle(win32console.STD_OUTPUT_HANDLE)
+        rect = win32console.PySMALL_RECTType(0, 0, cols - 1, lines - 1)
+        h.SetConsoleWindowInfo(True, rect)
+        size = win32console.PyCOORDType(cols, lines)
+        h.SetConsoleScreenBufferSize(size)
+    except Exception as e:
+        print(f"Error setting console size on Windows: {e}")
 
 def main():
     # Load words from the file
@@ -88,5 +89,6 @@ def main():
 
     input("\nPress Enter to exit...")
 
+# set_console_size(79, 12)
 if __name__ == "__main__":
     main()
