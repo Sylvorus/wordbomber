@@ -89,6 +89,6 @@ def main():
 
     input("\nPress Enter to exit...")
 
-# set_console_size(79, 12)
+set_console_size(81, 13)
 if __name__ == "__main__":
     main()
