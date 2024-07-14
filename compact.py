@@ -62,6 +62,8 @@ def main():
     words = load_words("words.txt")
     used_words = set()
 
+    print("Enter prompt to start.")
+
     set_window_topmost()
 
     while True:
@@ -86,8 +88,8 @@ def main():
             print(f"Matching word: {matching_word}")
             used_words.add(matching_word)
         else:
-            print("No matching words found or all matching words have been used.")
+            print("No matching unused words found.")
 
-set_console_size(60, 2)
+set_console_size(50, 2)
 if __name__ == "__main__":
     main()
