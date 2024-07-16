@@ -13,10 +13,17 @@ art = r"""                           __   __                    __
  |__/|__/\____/_/   \__,_/  /_.___/\____/_/ /_/ /_/_.___/\___/_/     by sylvorus
 """
 
+bye = r"""     __                  __               ____            __
+    / /_  __  _____     / /_  __  _____  / / /  ____    _/_/
+   / __ \/ / / / _ \   / __ \/ / / / _ \/ / /  / __ \ _/_/  
+  / /_/ / /_/ /  __/  / /_/ / /_/ /  __/_/_/  / /_/ //_/    
+ /_.___/\__, /\___/  /_.___/\__, /\___(_|_)   \____/_/      
+       /____/              /____/            """
+
 def load_words(filename):
     # loads words
     with open(filename, 'r') as file:
-        words = file.read().splitlines()
+        words = [line.strip().lower() for line in file]  # convert words to lowercase
     return words
 
 def find_matching_word(letters, words, used_words, mode):
@@ -59,9 +66,9 @@ def get_input():
     buffer = []
     while True:
         char = msvcrt.getch()
-        if char == b'\r':  # Enter key
+        if char == b'\r':  # enter key
             break
-        elif char == b'\x08':  # Backspace key
+        elif char == b'\x08':  # backspace key
             if buffer:
                 buffer.pop()
                 sys.stdout.write('\b \b')
@@ -77,7 +84,7 @@ def get_input():
 def main_normal_mode():
     set_console_size(83, 17)
     # load words from file
-    words = load_words("words.txt")
+    words = load_words(words_file)
     used_words = set()
     used_words_list = []
     mode = 'Longest'
@@ -91,9 +98,8 @@ def main_normal_mode():
     print("\n Enter prompt to start.")
 
     while True:
-        # read all letters as uppercase
         print("\n Enter the letters: ", end='', flush=True)
-        input_letters = get_input().strip().upper()
+        input_letters = get_input().strip().lower()
 
         clear_console()
 
@@ -103,7 +109,7 @@ def main_normal_mode():
         print(" Type '/' to skip the current word.")
         print(" Type 'exit' to quit the program.")
         
-        if input_letters == 'EXIT':
+        if input_letters == 'exit':
             break
         elif input_letters == '.':
             used_words.clear()
@@ -145,12 +151,7 @@ def main_normal_mode():
 
     clear_console()
     set_console_size(61, 8)
-    print(r'''     __                  __               ____            __
-    / /_  __  _____     / /_  __  _____  / / /  ____    _/_/
-   / __ \/ / / / _ \   / __ \/ / / / _ \/ / /  / __ \ _/_/  
-  / /_/ / /_/ /  __/  / /_/ / /_/ /  __/_/_/  / /_/ //_/    
- /_.___/\__, /\___/  /_.___/\__, /\___(_|_)   \____/_/      
-       /____/              /____/            ''')
+    print(bye)
     input("\n Press Enter to exit...")
 
 #################################################################################################
@@ -158,7 +159,7 @@ def main_normal_mode():
 def main_compact_mode():
     set_console_size(51, 3)
     # load words from file
-    words = load_words("words.txt")
+    words = load_words(words_file)
     used_words = set()
     used_words_list = []
     mode = 'Longest'
@@ -167,13 +168,12 @@ def main_compact_mode():
     print("Enter prompt to start.")
 
     while True:
-        # read all letters as uppercase
         print("Enter the letters: ", end='', flush=True)
-        input_letters = get_input().strip().upper()
+        input_letters = get_input().strip().lower()
 
         clear_console()
 
-        if input_letters == 'EXIT':
+        if input_letters == 'exit':
             break
         elif input_letters == '.':
             used_words.clear()
@@ -213,13 +213,53 @@ def main_compact_mode():
             print(f"Current mode: {mode}")
             print("No matching unused words found.")
 
+    clear_console()
+    print(" bye bye!! o/")
+    input("\n Press Enter to exit...")
+
 #################################################################################################
 
 # set_console_size(81, 12) - broken??
 if __name__ == "__main__":
     while True:
+        # choose dictionary
         print(art)
-        print(" Choose mode (1 or 2):")
+        print(" Choose dictionary:")
+        txt_files = [f for f in os.listdir('.') if f.endswith('.txt')]
+        if not txt_files:
+            print("\n No .txt files found in the directory.")
+            sys.exit()
+
+        for idx, file in enumerate(txt_files, 1):
+            print(f" {idx}. {file}")
+
+        print("\n Type 'exit' to quit the program.")
+
+        set_window_topmost()
+        
+        print("\n Enter choice: ", end='', flush=True)
+        word_list_choice = get_input().strip()
+
+        if word_list_choice.isdigit() and 1 <= int(word_list_choice) <= len(txt_files):
+            clear_console()
+            words_file = txt_files[int(word_list_choice) - 1]
+            break
+        elif word_list_choice.lower() == 'exit':
+            clear_console()
+            set_console_size(61, 8)
+            print(bye)
+            input("\n Press Enter to exit...")
+            sys.exit()
+        else:
+            clear_console()
+            continue
+    
+    words = load_words(words_file)
+    
+    while True:
+        # choose mode
+        print(art)
+        print(" Choose mode:")
         print(" 1. Normal Mode")
         print(" 2. Compact Mode")
         print("\n Type 'exit' to quit the program.")
@@ -238,6 +278,10 @@ if __name__ == "__main__":
             main_compact_mode()
             break
         elif choice == 'exit':
+            clear_console()
+            set_console_size(61, 8)
+            print(bye)
+            input("\n Press Enter to exit...")
             break
         else:
             clear_console()
