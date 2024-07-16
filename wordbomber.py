@@ -23,7 +23,7 @@ bye = r"""     __                  __               ____            __
 def load_words(filename):
     # loads words
     with open(filename, 'r') as file:
-        words = [line.strip().lower() for line in file]  # convert words to lowercase
+        words = [line.strip().upper() for line in file]
     return words
 
 def find_matching_word(letters, words, used_words, mode):
@@ -99,7 +99,7 @@ def main_normal_mode():
 
     while True:
         print("\n Enter the letters: ", end='', flush=True)
-        input_letters = get_input().strip().lower()
+        input_letters = get_input().strip().upper()
 
         clear_console()
 
@@ -109,7 +109,7 @@ def main_normal_mode():
         print(" Type '/' to skip the current word.")
         print(" Type 'exit' to quit the program.")
         
-        if input_letters == 'exit':
+        if input_letters.upper() == 'EXIT':
             break
         elif input_letters == '.':
             used_words.clear()
@@ -169,11 +169,11 @@ def main_compact_mode():
 
     while True:
         print("Enter the letters: ", end='', flush=True)
-        input_letters = get_input().strip().lower()
+        input_letters = get_input().strip().upper()
 
         clear_console()
 
-        if input_letters == 'exit':
+        if input_letters.upper() == 'EXIT':
             break
         elif input_letters == '.':
             used_words.clear()
@@ -244,7 +244,7 @@ if __name__ == "__main__":
             clear_console()
             words_file = txt_files[int(word_list_choice) - 1]
             break
-        elif word_list_choice.lower() == 'exit':
+        elif word_list_choice.upper() == 'EXIT':
             clear_console()
             set_console_size(61, 8)
             print(bye)
@@ -277,7 +277,7 @@ if __name__ == "__main__":
             clear_console()
             main_compact_mode()
             break
-        elif choice == 'exit':
+        elif choice.upper() == 'EXIT':
             clear_console()
             set_console_size(61, 8)
             print(bye)
